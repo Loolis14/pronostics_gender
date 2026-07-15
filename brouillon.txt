@@ -1,0 +1,8 @@
+    <hr style="width: 150px; border: 0; border-bottom: 1px solid #868585;">
+
+Pour le genre: faire un carré blanc autour ?
+
+#c6d7e4
+
+mettre le nombre de vote, 1 ligne en dessous du trait de personnalité
+#91abc4
