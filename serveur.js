@@ -29,7 +29,7 @@ function handleRequest(request, response) {
     if (reqUrl.pathname === "/") {
         const token = reqUrl.searchParams.get("token");
         const used = isTokenUsed(token);
-        if ( used == null ) {
+        if ( used === null ) {
             response.writeHead(404, { "Content-Type": "text/html;charset=utf-8" });
             response.end("Token not valid");
             return;
