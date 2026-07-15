@@ -2,7 +2,9 @@ import { createServer } from "node:http";
 import { readFileSync, readdirSync, existsSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { spawn } from "node:child_process";
+import { isTokenUsed } from "./isTokenUsed.js";
 
+const server = createServer(handleRequest);
 const mainPage = readFileSync("welcome_page.html", "utf-8");
 const mainPageStyle = readFileSync("assets/welcome_page.css", "utf-8");
 const mainPageBanniere = readFileSync("images/boy_or_girl.png");
@@ -13,10 +15,7 @@ const statisticsPage = readFileSync("statistics.php", "utf-8");
 const statisticsStyle = readFileSync("assets/statistics.css", "utf-8");
 const statisticsBoy= readFileSync("images/boy.png");
 const statisticsGirl= readFileSync("images/girl.png");
-const server = createServer(handleRequest);
 
-// ajouter la condition si la personne a repondu au questionnaire ou non
-// si oui afficher directement la page de statistic
 
 function handleRequest(request, response) {
     if (!request.url) {
@@ -27,6 +26,17 @@ function handleRequest(request, response) {
     console.log(reqUrl.pathname)
 
     if (reqUrl.pathname === "/") {
+        const token = reqUrl.searchParams.get("token");
+        const used = isTokenUsed(token);
+        if ( used == null ) {
+            response.writeHead(404, { "Content-Type": "text/html;charset=utf-8" });
+            response.end("Token not valid");
+            return;
+        } if ( used ) {
+            response.writeHead(302, { "Location": "/statistics"});
+            response.end();
+            return;
+        }
         response.writeHead(200, { "Content-Type": "text/html;charset=utf-8" });
         response.write(mainPage);
         response.end();
@@ -72,6 +82,7 @@ function handleRequest(request, response) {
         });
 
         request.on("end", () => {
+            // regarder le token, mettre used en true et ecrire le nom de la personne
             const donnees = Object.fromEntries(new URLSearchParams(corpsFormulary));
             const dirName = "participants";
             const fileName = `${donnees.name}.json`

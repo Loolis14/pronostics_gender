@@ -79,6 +79,6 @@ foreach ($fichiers as $fichier) {
 
 $pourcentage_green = $green_eyes / $nb_participants * 100;
 $pourcentage_blue = $blue_eyes / $nb_participants * 100;
-$pourcentage_brown = $brown_eyes / $nb_participants * 100;
+$pourcentage_brown = $brown_eyes / $nb_participants;
 
 ?>

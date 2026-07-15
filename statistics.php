@@ -44,8 +44,8 @@
                     <div class="chart-container"
                         style="background: conic-gradient(
                             #809989 0% <?= $pourcentage_green ?>%,
-                            #a9c5de <?= $pourcentage_green ?>% <?= $pourcentage_blue ?>%,
-                            #d69e71 <?= $pourcentage_blue ?>% 100%
+                            #a9c5de <?= $pourcentage_green ?>% <?= $pourcentage_blue + $pourcentage_green?>%,
+                            #d69e71 <?= $pourcentage_blue + $pourcentage_green?>% 100%
                         );">
                         <div class="center-label"></div>
                     </div>
