@@ -38,8 +38,9 @@ function handleRequest(request, response) {
             response.end();
             return;
         }
+        const page = mainPage.replace("{{TOKEN}}", token);
         response.writeHead(200, { "Content-Type": "text/html;charset=utf-8" });
-        response.write(mainPage);
+        response.write(page);
         response.end();
     } else if (reqUrl.pathname === "/assets/welcome_page.css") {
         response.writeHead(200, { "Content-Type": "text/css;charset=utf-8" });
@@ -58,8 +59,10 @@ function handleRequest(request, response) {
         response.write(banniereProno);
         response.end();
     } else if (reqUrl.pathname === "/formulaire" && request.method === "GET") {
+        const token = reqUrl.searchParams.get("token");
+        const page = formulairePage.replace("{{TOKEN}}", token);
         response.writeHead(200, { "Content-Type": "text/html;charset=utf-8" });
-        response.write(formulairePage);
+        response.write(page);
         response.end();
     } else if (reqUrl.pathname === "/statistics") {
         response.setHeader("Content-Type", "text/html;charset=utf-8");
@@ -98,7 +101,7 @@ function handleRequest(request, response) {
                 response.writeHead(500, { "Content-Type": "text/html;charset=utf-8" });
                 response.end("Une erreur interne est survenue lors de la sauvegarde.");
             }
-            tokenConsumed(token, donnees.name);
+            tokenConsumed(donnees.token, donnees.name);
         });
     } else {
         response.writeHead(404, { "Content-Type": "text/html;charset=utf-8" });
