@@ -4,6 +4,7 @@ import path from "node:path";
 import { spawn } from "node:child_process";
 import { isTokenUsed } from "./isTokenUsed.js";
 import { tokenConsumed } from "./tokenConsumed.js";
+import { getCookies } from "./getCookies.js";
 
 const server = createServer(handleRequest);
 const mainPage = readFileSync("welcome_page.html", "utf-8");
@@ -27,20 +28,29 @@ function handleRequest(request, response) {
     console.log(reqUrl.pathname)
 
     if (reqUrl.pathname === "/") {
+        const cookies = getCookies(request);
         const token = reqUrl.searchParams.get("token");
         const used = isTokenUsed(token);
-        if ( used === null ) {
+        if ( used === null && !cookies.token ) {
             response.writeHead(404, { "Content-Type": "text/html;charset=utf-8" });
-            response.end("Token not valid");
+            response.end("Le token n'est pas valide.");
             return;
         } if ( used ) {
             response.writeHead(302, { "Location": "/statistics"});
             response.end();
             return;
         }
-        const page = mainPage.replace("{{TOKEN}}", token);
+        if ( !cookies.token ) {
+            response.setHeader("Set-Cookie", `token=${token}; Path=/; HttpOnly`);
+            response.writeHead(303, {"Location": "/welcome" });
+            response.end();
+        } else {
+            response.writeHead(303, {"Location": "/welcome" });
+            response.end();
+        }
+    } else if (reqUrl.pathname === "/welcome") {
         response.writeHead(200, { "Content-Type": "text/html;charset=utf-8" });
-        response.write(page);
+        response.write(mainPage);
         response.end();
     } else if (reqUrl.pathname === "/assets/welcome_page.css") {
         response.writeHead(200, { "Content-Type": "text/css;charset=utf-8" });
@@ -51,7 +61,7 @@ function handleRequest(request, response) {
         response.write(mainPageBanniere);
         response.end();
     } else if (reqUrl.pathname === "/assets/formulaire.css") {
-        response.writeHead(200, { "Content-Type": "image/jpg" });
+        response.writeHead(200, { "Content-Type": "text/css;charset=utf-8" });
         response.write(formulaireStyle);
         response.end();
     } else if (reqUrl.pathname === "/images/pronostics.png") {
@@ -59,10 +69,8 @@ function handleRequest(request, response) {
         response.write(banniereProno);
         response.end();
     } else if (reqUrl.pathname === "/formulaire" && request.method === "GET") {
-        const token = reqUrl.searchParams.get("token");
-        const page = formulairePage.replace("{{TOKEN}}", token);
         response.writeHead(200, { "Content-Type": "text/html;charset=utf-8" });
-        response.write(page);
+        response.write(formulairePage);
         response.end();
     } else if (reqUrl.pathname === "/statistics") {
         response.setHeader("Content-Type", "text/html;charset=utf-8");
@@ -101,7 +109,8 @@ function handleRequest(request, response) {
                 response.writeHead(500, { "Content-Type": "text/html;charset=utf-8" });
                 response.end("Une erreur interne est survenue lors de la sauvegarde.");
             }
-            tokenConsumed(donnees.token, donnees.name);
+            const cookie = getCookies(request);
+            tokenConsumed(cookie.token, donnees.name);
         });
     } else {
         response.writeHead(404, { "Content-Type": "text/html;charset=utf-8" });
