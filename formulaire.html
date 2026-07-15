@@ -1,12 +1,12 @@
 <form id="formulary" action="#" method="POST" class="form-container">
 
-  <link rel="stylesheet" href="/assets/formulaire.css">
-  <div class="responses-block">
-    <div class="two-responses_2">
+  <link rel="stylesheet" href="assets/formulaire.css">
+  <div class="body">
+    <div class="row-2">
       <header class="banniere"></header>
     </div>
   
-    <div class="two-responses_1">
+    <div class="row-gender" style="font-size: 17px;">
       <div class="input-group_3">
         <p class="gender" style="padding: 0px;">Mon genre</p>
         <label class="checkbox-label">
@@ -20,36 +20,36 @@
       </div>
     </div>
 
-    <div class="two-responses_1">
-      <div class="input-group">
-        <label for="day" style="font-size: 15px;">Ma date de naissance</label>
+    <div class="row">
+      <div class="case">
+        <label for="day">Ma date de naissance</label>
         <input type="date" id="day" name="day" min="2026-10-23" max="2026-12-10" required>
       </div>
-      <div class="input-group" style="font-size: 15px";>
-            Sachant qu'au plus tard, j'arriverai le<br>
-            24 novembre 2026
+      <div class="case">
+            Sachant que le terme est prévu pour<br>
+            le 24 novembre 2026
       </div>
     </div>
 
-    <div class="two-responses_1">
-      <div class="input-group">
-        <label class="title" style="font-size: 15px;">La couleur de mes yeux</label>
-        <label class="checkbox-label" style="font-size: 15px;">
+    <div class="row">
+      <div class="case">
+        <label class="title" style="margin: 0; padding: 0;">La couleur de mes yeux</label>
+        <label class="checkbox-label" >
           <input type="radio" name="eyes" value="green">
           Verts
         </label>
-        <label class="checkbox-label" style="font-size: 15px;">
+        <label class="checkbox-label" >
           <input type="radio" name="eyes" value="blue">
           Bleus
         </label>
-        <label class="checkbox-label" style="font-size: 15px;">
+        <label class="checkbox-label" >
           <input type="radio" name="eyes" value="brown">
           Bruns
         </label>
       </div>
 
-      <div class="input-group">
-        <label for="personnality" style="font-size: 15px;">Mon tempérament</label>
+      <div class="case">
+        <label for="personnality" >Mon tempérament</label>
           <select class="custom-select" name="personnality" id="personnality">
             <option value="" selected disabled></option>
             <option value="Câlin">Câlin</option>
@@ -64,43 +64,43 @@
       </div>
     </div>
 
-    <div class="two-responses_1">
-        <div class="input-group">
-          <label for="word" style="font-size: 15px;">
+    <div class="row">
+        <div class="case">
+          <label for="word" >
             Quel sera mon premier mot ?
           </label>
           <input type="text" id="word" name="word" required>
         </div>
       
-      <div class="input-group">
-        <label for="shared_will" style="font-size: 15px;">Qu'aimerais-tu partager avec moi ?</label>
+      <div class="case">
+        <label for="shared_will" >Qu'aimerais-tu partager avec moi ?</label>
         <input type="text" id="shared_will" name="shared_will" required>
       </div>
     </div>
 
-    <div class="two-responses_2">
-      <div class="input-group_1" style="font-size: 15px;">
+    <div class="row-2">
+      <div class="input-group_1" >
         Qu'aimerais-tu que je prenne de ...
       </div>
       <div class="colum">
         <div class="input-group_2">
-          <label for="mother_smthg" style="font-size: 15px;">ma maman</label>
+          <label for="mother_smthg" >ma maman</label>
           <input type="text" id="mother_smthg" name="mother_smthg" required>
         </div>
         <div class="input-group_2">
-          <label for="father_smthg" style="font-size: 15px;">mon papa</label>
+          <label for="father_smthg" style="padding-right: 7px;">mon papa</label>
           <input type="text" id="father_smthg" name="father_smthg" required>
         </div>
       </div>
     </div>
 
-    <div class="two-responses_2">
-      <div class="input-group_1" style="font-size: 15px;">
+    <div class="row-2">
+      <div class="input-group_1" >
         Plus tard, je serai ...
         <br><small>Version GN</small>
       </div>
       <div class="column">
-        <label for="race" style="font-size: 15px;">un / une</label>
+        <label for="race" >un / une</label>
           <select class="custom-select" name="race" id="race">
             <option value="" selected disabled></option>
             <option value="Humain">Humain</option>
@@ -110,7 +110,7 @@
             <option value="Hobbit">Hobbit</option>
             <option value="Draconien">Draconien</option>
           </select>
-        <label for="classe" style="font-size: 15px;">de classe</label>
+        <label for="classe" >de classe</label>
           <select class="custom-select" name="classe" id="classe">
             <option value="" selected disabled></option>
             <option value="Paladin">Paladin</option>
@@ -125,14 +125,14 @@
       </div>
     </div>
 
-    <div class="two-responses_3">
-        <div class="input-group">
-          <label for="message" style="font-size: 15px;">Conseil pour mes futurs parents</label>
+    <div class="row-3">
+        <div class="case-3">
+          <label for="message" >Conseil pour mes futurs parents</label>
           <textarea id="message" name="advise" rows="4" placeholder="Réponse uniquement visible par les parents." required></textarea>
         </div>
 
-        <div class="input-group">
-          <label for="message" style="font-size: 15px;">Petit mot d'amour pour ma naissance</label>
+        <div class="case-3">
+          <label for="message" >Petit mot d'amour pour ma naissance</label>
           <textarea id="message" name="wish" rows="4" placeholder="Réponse uniquement visible par les parents." required></textarea>
         </div>
     </div>

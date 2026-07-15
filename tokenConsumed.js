@@ -1,13 +1,16 @@
-import { readFileSync, writeFileSync } from "node:fs";
+import { read, readFileSync, writeFileSync } from "node:fs";
 
 const tokensFile = "tokens.json";
 
-export function isTokenUsed(token) {
+export function tokenConsumed(token, name) {
     const tokens = JSON.parse(readFileSync(tokensFile, "utf-8"));
 
-    if ( token in tokens) {
-        return tokens[token]["used"]
-    } else {
-        return null;
-    }
+    tokens[token].used = true;
+    tokens[tokens].name = name;
+
+    writeFileSync(
+        tokensFile,
+        JSON.stringify(token, null, 4),
+        "utf-8"
+    );
 }

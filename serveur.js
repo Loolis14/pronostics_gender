@@ -3,6 +3,7 @@ import { readFileSync, readdirSync, existsSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { spawn } from "node:child_process";
 import { isTokenUsed } from "./isTokenUsed.js";
+import { tokenConsumed } from "./tokenConsumed.js";
 
 const server = createServer(handleRequest);
 const mainPage = readFileSync("welcome_page.html", "utf-8");
@@ -82,7 +83,6 @@ function handleRequest(request, response) {
         });
 
         request.on("end", () => {
-            // regarder le token, mettre used en true et ecrire le nom de la personne
             const donnees = Object.fromEntries(new URLSearchParams(corpsFormulary));
             const dirName = "participants";
             const fileName = `${donnees.name}.json`
@@ -98,6 +98,7 @@ function handleRequest(request, response) {
                 response.writeHead(500, { "Content-Type": "text/html;charset=utf-8" });
                 response.end("Une erreur interne est survenue lors de la sauvegarde.");
             }
+            tokenConsumed(token, donnees.name);
         });
     } else {
         response.writeHead(404, { "Content-Type": "text/html;charset=utf-8" });
