@@ -12,12 +12,26 @@
     <h1>Analyse des réponses</h1>
 
     <div class="row">
-        <div class="image_boy"><?=round($boy_vote/$nb_participants * 100)?>%</div>
+        <div class="image_boy">
+            <?php
+            if ($nb_participants == 0) {
+                echo 0;
+            } else {
+                round($boy_vote/$nb_participants * 100);
+            }
+            ?>%</div>
         <div class="case_1">
             <section class="title">Genre</section>
             <progress class="progress-gender" value="<?= $boy_vote ?>" max="<?= $nb_participants ?>"></progress>
         </div>
-        <div class="image_girl"><?=round($girl_vote/$nb_participants * 100)?>%</div>
+        <div class="image_girl">
+            <?php
+            if ($nb_participants == 0) {
+                echo 0;
+            } else {
+                round($girl_vote/$nb_participants * 100);
+            }
+            ?>%</div>
     </div>
 
     <div class="row">
@@ -29,8 +43,20 @@
             </div>
                 <progress value="<?= $scorpion ?>" max="<?= $nb_participants?>"></progress>
                 <section class="astro-pourcentage">
-                    <p><?=round($scorpion/$nb_participants * 100)?>%</p>
-                    <p><?=round($sagittaire/$nb_participants * 100)?>%</p>
+                    <p><?php
+                    if ($nb_participants == 0) {
+                        echo 0;
+                    } else {
+                        round($scorpion/$nb_participants * 100);
+                    }
+                    ?>%</p>
+                    <p><?php
+                    if ($nb_participants == 0) {
+                        echo 0;
+                    } else {
+                        round($sagittaire/$nb_participants * 100);
+                    }
+                    ?>%</p>
                 </section>
         </div>
         <div class="case">

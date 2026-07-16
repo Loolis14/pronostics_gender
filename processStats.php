@@ -77,8 +77,14 @@ foreach ($fichiers as $fichier) {
     $personnage[$donnees["classe"]][$classes[$donnees["race"]]] += 1;
 }
 
-$pourcentage_green = $green_eyes / $nb_participants * 100;
-$pourcentage_blue = $blue_eyes / $nb_participants * 100;
-$pourcentage_brown = $brown_eyes / $nb_participants;
+if ( $nb_participants == 0 ) {
+    $pourcentage_green = 0;
+    $pourcentage_blue = 0;
+    $pourcentage_brown = 0;
+} else {
+    $pourcentage_green = $green_eyes / $nb_participants * 100;
+    $pourcentage_blue = $blue_eyes / $nb_participants * 100;
+    $pourcentage_brown = $brown_eyes / $nb_participants;
+}
 
 ?>
