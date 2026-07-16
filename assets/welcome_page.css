@@ -60,3 +60,18 @@ a {
     text-decoration: none;
     color: inherit;
 }
+
+/* Téléphones */
+@media (max-width: 768px) {
+
+    body {
+        display: flex;
+        width: 350px;
+        flex-direction: column;
+    }
+
+    .buttons {
+    display: flex;
+    flex-direction: column;
+    }
+}

@@ -241,3 +241,56 @@ footer {
     margin-right: 20px;
     margin-bottom: 10px;
 }
+
+@media (max-width: 768px) {
+
+    .body {
+        display: flex;
+        width: 350px;
+        flex-direction: column;
+    }
+
+    .row {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .case_job {
+        width: 350px;
+    }
+
+    .case_personnality {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .image_boy {
+        width: 20%;
+        margin: 0;
+        padding: 0;
+        margin-right: 200px;
+    }
+
+    .image_girl {
+        width: 20%;
+        margin: 0;
+        padding: 0;
+        margin-left: 200px;
+        margin-top: 40px;
+    }
+
+    .case_1 {
+        margin:0;
+        padding: 0;
+        height: 15px;
+    }
+
+    .job {
+        width: 250px;
+        font-weight: normal;
+        word-spacing: 10px;
+    }
+}
