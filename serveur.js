@@ -1,5 +1,5 @@
 import { createServer } from "node:http";
-import { readFileSync, readdirSync, existsSync, writeFileSync } from "node:fs";
+import { readFileSync, readdirSync, existsSync, writeFileSync, createReadStream } from "node:fs";
 import path from "node:path";
 import { spawn } from "node:child_process";
 import { isTokenUsed } from "./isTokenUsed.js";
@@ -8,18 +8,46 @@ import { getCookies } from "./getCookies.js";
 
 const server = createServer(handleRequest);
 const mainPage = readFileSync("welcome_page.html", "utf-8");
-const mainPageStyle = readFileSync("assets/welcome_page.css", "utf-8");
 const mainPageBanniere = readFileSync("images/boy_or_girl.png");
 const mainPageBanniere2 = readFileSync("images/boy_or_girl_smartphone.jpg");
 const formulairePage = readFileSync("formulaire.html", "utf-8");
 const banniereProno = readFileSync("images/pronostics.png");
 const banniereProno2 = readFileSync("images/pronostics2.png");
-const formulaireStyle = readFileSync("assets/formulaire.css", "utf-8");
 const statisticsPage = readFileSync("statistics.php", "utf-8");
-const statisticsStyle = readFileSync("assets/statistics.css", "utf-8");
 const statisticsBoy = readFileSync("images/boy.png");
 const statisticsGirl = readFileSync("images/girl.png");
 
+const MIME_TYPE_BY_EXT = Object.freeze({
+    ".html": "text/html",
+    ".css": "text/css",
+    ".png": "image/png",
+    ".jpg": "image/jpeg",
+    __proto__: null,
+});
+
+function serveAssets(pathname, response) {
+    const extension = path.extname(pathname);
+    // Infer the MIME type (e.g., text/html) from the extension (e.g., .html).
+    let mimeType = MIME_TYPE_BY_EXT[extension] || "application/octet-stream";
+    if (mimeType.startsWith("text")) {
+        mimeType += ";charset=utf-8";
+    }
+    response.setHeader("Content-Type", mimeType);
+
+    // Try to read the file and pipe its contents directly into the reponse.
+    const readStream = createReadStream(path.join(process.cwd(), pathname));
+    readStream.pipe(response);
+    readStream.on("error", (error) => {
+        if (error.code === "ENOENT") { // triggered if the file doesn't exist
+            response.writeHead(404, { "Content-Type": "text/plain;charset=utf-8" });
+            response.end("404 Not Found");
+        } else {
+            response.writeHead(500, { "Content-Type": "text/plain;charset=utf-8" });
+            response.end("500 Internal Server Error");
+        }
+        console.error(`Error reading ${pathname}:`, error.message);
+    });
+}
 
 function handleRequest(request, response) {
     if (!request.url) {
@@ -27,6 +55,10 @@ function handleRequest(request, response) {
     }
     const baseUrl = `http://${request.headers.host}`;
     const reqUrl = new URL(request.url, baseUrl);
+    if (reqUrl.pathname.startsWith("/assets")) {
+        serveAssets(reqUrl.pathname, response);
+        return;
+    }
     console.log(reqUrl.pathname)
 
     if (reqUrl.pathname === "/") {
@@ -54,10 +86,6 @@ function handleRequest(request, response) {
         response.writeHead(200, { "Content-Type": "text/html;charset=utf-8" });
         response.write(mainPage);
         response.end();
-    } else if (reqUrl.pathname === "/assets/welcome_page.css") {
-        response.writeHead(200, { "Content-Type": "text/css;charset=utf-8" });
-        response.write(mainPageStyle);
-        response.end();
     } else if (reqUrl.pathname === "/images/boy_or_girl.png") {
         response.writeHead(200, { "Content-Type": "image/png" });
         response.write(mainPageBanniere);
@@ -65,10 +93,6 @@ function handleRequest(request, response) {
     } else if (reqUrl.pathname === "/images/boy_or_girl_smartphone.jpg") {
         response.writeHead(200, { "Content-Type": "image/jpg" });
         response.write(mainPageBanniere2);
-        response.end();
-    } else if (reqUrl.pathname === "/assets/formulaire.css") {
-        response.writeHead(200, { "Content-Type": "text/css;charset=utf-8" });
-        response.write(formulaireStyle);
         response.end();
     } else if (reqUrl.pathname === "/images/pronostics.png") {
         response.writeHead(200, { "Content-Type": "image/png" });
@@ -85,10 +109,6 @@ function handleRequest(request, response) {
     } else if (reqUrl.pathname === "/statistics") {
         response.setHeader("Content-Type", "text/html;charset=utf-8");
         servePhpFile("statistics.php", response)
-    } else if (reqUrl.pathname === "/assets/statistics.css") {
-        response.writeHead(200, { "Content-Type": "text/css;charset=utf-8" });
-        response.write(statisticsStyle);
-        response.end();
     } else if (reqUrl.pathname === "/images/girl.png") {
         response.writeHead(200, { "Content-Type": "image/png" });
         response.write(statisticsGirl);
