@@ -8,14 +8,8 @@ import { getCookies } from "./getCookies.js";
 
 const server = createServer(handleRequest);
 const mainPage = readFileSync("welcome_page.html", "utf-8");
-const mainPageBanniere = readFileSync("images/boy_or_girl.png");
-const mainPageBanniere2 = readFileSync("images/boy_or_girl_smartphone.jpg");
 const formulairePage = readFileSync("formulaire.html", "utf-8");
-const banniereProno = readFileSync("images/pronostics.png");
-const banniereProno2 = readFileSync("images/pronostics2.png");
 const statisticsPage = readFileSync("statistics.php", "utf-8");
-const statisticsBoy = readFileSync("images/boy.png");
-const statisticsGirl = readFileSync("images/girl.png");
 
 const MIME_TYPE_BY_EXT = Object.freeze({
     ".html": "text/html",
@@ -86,22 +80,6 @@ function handleRequest(request, response) {
         response.writeHead(200, { "Content-Type": "text/html;charset=utf-8" });
         response.write(mainPage);
         response.end();
-    } else if (reqUrl.pathname === "/images/boy_or_girl.png") {
-        response.writeHead(200, { "Content-Type": "image/png" });
-        response.write(mainPageBanniere);
-        response.end();
-    } else if (reqUrl.pathname === "/images/boy_or_girl_smartphone.jpg") {
-        response.writeHead(200, { "Content-Type": "image/jpg" });
-        response.write(mainPageBanniere2);
-        response.end();
-    } else if (reqUrl.pathname === "/images/pronostics.png") {
-        response.writeHead(200, { "Content-Type": "image/png" });
-        response.write(banniereProno);
-        response.end();
-    } else if (reqUrl.pathname === "/images/pronostics2.png") {
-        response.writeHead(200, { "Content-Type": "image/png" });
-        response.write(banniereProno2);
-        response.end();
     } else if (reqUrl.pathname === "/formulaire" && request.method === "GET") {
         response.writeHead(200, { "Content-Type": "text/html;charset=utf-8" });
         response.write(formulairePage);
@@ -109,14 +87,6 @@ function handleRequest(request, response) {
     } else if (reqUrl.pathname === "/statistics") {
         response.setHeader("Content-Type", "text/html;charset=utf-8");
         servePhpFile("statistics.php", response)
-    } else if (reqUrl.pathname === "/images/girl.png") {
-        response.writeHead(200, { "Content-Type": "image/png" });
-        response.write(statisticsGirl);
-        response.end();
-    } else if (reqUrl.pathname === "/images/boy.png") {
-        response.writeHead(200, { "Content-Type": "image/png" });
-        response.write(statisticsBoy);
-        response.end();
     } else if (request.method === 'POST') {
         let corpsFormulary = "";
         request.on("data", (chunk) => {
