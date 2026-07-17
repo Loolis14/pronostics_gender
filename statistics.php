@@ -17,7 +17,7 @@
             if ($nb_participants == 0) {
                 echo 0;
             } else {
-                round($boy_vote/$nb_participants * 100);
+                echo round($boy_vote/$nb_participants * 100);
             }
             ?>%</div>
         <div class="case_1">
@@ -29,7 +29,7 @@
             if ($nb_participants == 0) {
                 echo 0;
             } else {
-                round($girl_vote/$nb_participants * 100);
+                echo round($girl_vote/$nb_participants * 100);
             }
             ?>%</div>
     </div>
@@ -47,14 +47,14 @@
                     if ($nb_participants == 0) {
                         echo 0;
                     } else {
-                        round($scorpion/$nb_participants * 100);
+                        echo round($scorpion/$nb_participants * 100);
                     }
                     ?>%</p>
                     <p><?php
                     if ($nb_participants == 0) {
                         echo 0;
                     } else {
-                        round($sagittaire/$nb_participants * 100);
+                        echo round($sagittaire/$nb_participants * 100);
                     }
                     ?>%</p>
                 </section>
