@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { getCookies } from "./getCookies.js";
 import { isTokenUsed } from "./isTokenUsed.js";
@@ -62,6 +62,8 @@ route("POST", "/formulaire", (request, response) => {
         const dirName = "participants";
         const fileName = `${donnees.name}.json`
         const pathName = path.join(dirName, fileName)
+        // ensures the "/participants" directory exists (i.e. creates it if it doesn't)
+        mkdirSync(dirName, { recursive: true });
         try {
             const donneesJson = JSON.stringify(donnees, null, 4);
             writeFileSync(pathName, donneesJson, "utf-8");
