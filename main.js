@@ -54,10 +54,19 @@ route("GET", "/statistics", (_request, response) => {
 
 route("POST", "/formulaire", (request, response) => {
     let corpsFormulary = "";
+    const MAX_PAYLOAD_SIZE = 1 * 1024 * 1024; // 1 MB limit
     request.on("data", (chunk) => {
-        corpsFormulary += chunk.toString();
+        corpsFormulary += chunk;
+        // Prevent memory exhaustion attacks
+        if (corpsFormulary.length > MAX_PAYLOAD_SIZE) {
+            request.destroy();
+            return;
+        }
     });
     request.on("end", () => {
+        if (request.destroyed) {
+            return;
+        }
         const donnees = Object.fromEntries(new URLSearchParams(corpsFormulary));
         const dirName = "participants";
         const fileName = `${donnees.name}.json`
