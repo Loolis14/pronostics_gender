@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { getCookies } from "./getCookies.js";
@@ -70,7 +71,7 @@ route("POST", "/formulaire", (request, response) => {
         }
         const donnees = Object.fromEntries(new URLSearchParams(corpsFormulary));
         const dirName = "participants";
-        const fileName = `${donnees.name}.json`
+        const fileName = `${randomUUID()}.json`
         const pathName = path.join(dirName, fileName)
         // ensures the "/participants" directory exists (i.e. creates it if it doesn't)
         mkdirSync(dirName, { recursive: true });
