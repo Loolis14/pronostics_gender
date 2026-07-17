@@ -79,12 +79,12 @@ route("POST", "/formulaire", (request, response) => {
             console.log(`Fichier creer avec succes`);
             response.writeHead(303, {"Location": "/statistics" });
             response.end();
+            const cookie = getCookies(request);
+            tokenConsumed(cookie.token, donnees.name);
         } catch (error) {
             console.error("Erreur lors de la création du fichier.");
             response.writeHead(500, { "Content-Type": "text/html;charset=utf-8" });
             response.end("Une erreur interne est survenue lors de la sauvegarde.");
         }
-        const cookie = getCookies(request);
-        tokenConsumed(cookie.token, donnees.name);
     });
 });
