@@ -1,7 +1,7 @@
 .banniere {
   width: 100%;
   height: 150px;
-  background-image: url("/images/boy_or_girl.png"); 
+  background-image: url("/assets/boy_or_girl.png"); 
   background-repeat: no-repeat;
   background-size: 100% 100%;
 }
@@ -78,7 +78,7 @@ a {
     .banniere {
     width: 100%;
     height: 200px;
-    background-image: url("/images/boy_or_girl_smartphone.jpg"); 
+    background-image: url("/assets/boy_or_girl_smartphone.jpg"); 
     background-repeat: no-repeat;
     background-size: 100% 100%;
     }

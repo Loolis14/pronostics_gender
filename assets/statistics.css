@@ -39,7 +39,7 @@ h1 {
 }
 
 .image_boy {
-    background-image: url("/images/boy.png");
+    background-image: url("/assets/boy.png");
     width: 15%;
     aspect-ratio: 1 / 1;
     background-repeat: no-repeat;
@@ -50,7 +50,7 @@ h1 {
 }
 
 .image_girl {
-    background-image: url("/images/girl.png");
+    background-image: url("/assets/girl.png");
     width: 15%;
     aspect-ratio: 1 / 1;
     background-repeat: no-repeat;
