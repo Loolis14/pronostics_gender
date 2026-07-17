@@ -10,13 +10,15 @@ const server = createServer(handleRequest);
 const mainPage = readFileSync("welcome_page.html", "utf-8");
 const mainPageStyle = readFileSync("assets/welcome_page.css", "utf-8");
 const mainPageBanniere = readFileSync("images/boy_or_girl.png");
+const mainPageBanniere2 = readFileSync("images/boy_or_girl_smartphone.jpg");
 const formulairePage = readFileSync("formulaire.html", "utf-8");
 const banniereProno = readFileSync("images/pronostics.png");
+const banniereProno2 = readFileSync("images/pronostics2.png");
 const formulaireStyle = readFileSync("assets/formulaire.css", "utf-8");
 const statisticsPage = readFileSync("statistics.php", "utf-8");
 const statisticsStyle = readFileSync("assets/statistics.css", "utf-8");
-const statisticsBoy= readFileSync("images/boy.png");
-const statisticsGirl= readFileSync("images/girl.png");
+const statisticsBoy = readFileSync("images/boy.png");
+const statisticsGirl = readFileSync("images/girl.png");
 
 
 function handleRequest(request, response) {
@@ -60,6 +62,10 @@ function handleRequest(request, response) {
         response.writeHead(200, { "Content-Type": "image/png" });
         response.write(mainPageBanniere);
         response.end();
+    } else if (reqUrl.pathname === "/images/boy_or_girl_smartphone.jpg") {
+        response.writeHead(200, { "Content-Type": "image/jpg" });
+        response.write(mainPageBanniere2);
+        response.end();
     } else if (reqUrl.pathname === "/assets/formulaire.css") {
         response.writeHead(200, { "Content-Type": "text/css;charset=utf-8" });
         response.write(formulaireStyle);
@@ -67,6 +73,10 @@ function handleRequest(request, response) {
     } else if (reqUrl.pathname === "/images/pronostics.png") {
         response.writeHead(200, { "Content-Type": "image/png" });
         response.write(banniereProno);
+        response.end();
+    } else if (reqUrl.pathname === "/images/pronostics2.png") {
+        response.writeHead(200, { "Content-Type": "image/png" });
+        response.write(banniereProno2);
         response.end();
     } else if (reqUrl.pathname === "/formulaire" && request.method === "GET") {
         response.writeHead(200, { "Content-Type": "text/html;charset=utf-8" });

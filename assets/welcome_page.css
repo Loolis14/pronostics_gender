@@ -74,4 +74,12 @@ a {
     display: flex;
     flex-direction: column;
     }
+
+    .banniere {
+    width: 100%;
+    height: 200px;
+    background-image: url("/images/boy_or_girl_smartphone.jpg"); 
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    }
 }
