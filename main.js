@@ -55,6 +55,7 @@ route("GET", "/statistics", (_request, response) => {
 route("POST", "/formulaire", (request, response) => {
     let corpsFormulary = "";
     const MAX_PAYLOAD_SIZE = 1 * 1024 * 1024; // 1 MB limit
+    request.setEncoding("utf-8");
     request.on("data", (chunk) => {
         corpsFormulary += chunk;
         // Prevent memory exhaustion attacks
