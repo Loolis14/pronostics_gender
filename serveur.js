@@ -1,15 +1,12 @@
-import { createServer } from "node:http";
+import http from "node:http";
 import { readFileSync, readdirSync, existsSync, writeFileSync, createReadStream } from "node:fs";
 import path from "node:path";
 import { spawn } from "node:child_process";
-import { isTokenUsed } from "./isTokenUsed.js";
-import { tokenConsumed } from "./tokenConsumed.js";
-import { getCookies } from "./getCookies.js";
 
-const server = createServer(handleRequest);
-const mainPage = readFileSync("welcome_page.html", "utf-8");
-const formulairePage = readFileSync("formulaire.html", "utf-8");
-const statisticsPage = readFileSync("statistics.php", "utf-8");
+export function startHttpServer(port) {
+    const server = http.createServer(handleRequest);
+    server.listen(8080);
+}
 
 const MIME_TYPE_BY_EXT = Object.freeze({
     ".html": "text/html",
@@ -49,81 +46,13 @@ function getRouteName(method, url) {
 
 const routes = new Map();
 
-function route(method, url, callback) {
+export function route(method, url, callback) {
     const routeName = getRouteName(method, url);
     if (routes.has(routeName)) {
         throw new Error(`Duplicate route detected! '${routeName}'`);
     }
     routes.set(routeName, callback);
 }
-
-route("GET", "/", (request, response) => {
-    const cookies = getCookies(request);
-    const baseUrl = `http://${request.headers.host}`;
-    const reqUrl = new URL(request.url, baseUrl);
-    const token = reqUrl.searchParams.get("token");
-    const used = isTokenUsed(token);
-    if ( used === null && !cookies.token ) {
-        response.writeHead(404, { "Content-Type": "text/html;charset=utf-8" });
-        response.end("Le token n'est pas valide.");
-        return;
-    } if ( used ) {
-        response.writeHead(302, { "Location": "/statistics"});
-        response.end();
-        return;
-    }
-    if ( !cookies.token ) {
-        response.setHeader("Set-Cookie", `token=${token}; Path=/; HttpOnly`);
-        response.writeHead(303, {"Location": "/welcome" });
-        response.end();
-    } else {
-        response.writeHead(303, {"Location": "/welcome" });
-        response.end();
-    }
-});
-
-route("GET", "/welcome", (_request, response) => {
-    response.writeHead(200, { "Content-Type": "text/html;charset=utf-8" });
-    response.write(mainPage);
-    response.end();
-});
-
-route("GET", "/formulaire", (_request, response) => {
-    response.writeHead(200, { "Content-Type": "text/html;charset=utf-8" });
-    response.write(formulairePage);
-    response.end();
-});
-
-route("GET", "/statistics", (_request, response) => {
-    response.setHeader("Content-Type", "text/html;charset=utf-8");
-    servePhpFile("statistics.php", response);
-});
-
-route("POST", "/formulaire", (request, response) => {
-    let corpsFormulary = "";
-    request.on("data", (chunk) => {
-        corpsFormulary += chunk.toString();
-    });
-    request.on("end", () => {
-        const donnees = Object.fromEntries(new URLSearchParams(corpsFormulary));
-        const dirName = "participants";
-        const fileName = `${donnees.name}.json`
-        const pathName = path.join(dirName, fileName)
-        try {
-            const donneesJson = JSON.stringify(donnees, null, 4);
-            writeFileSync(pathName, donneesJson, "utf-8");
-            console.log(`Fichier creer avec succes`);
-            response.writeHead(303, {"Location": "/statistics" });
-            response.end();
-        } catch (error) {
-            console.error("Erreur lors de la création du fichier.");
-            response.writeHead(500, { "Content-Type": "text/html;charset=utf-8" });
-            response.end("Une erreur interne est survenue lors de la sauvegarde.");
-        }
-        const cookie = getCookies(request);
-        tokenConsumed(cookie.token, donnees.name);
-    });
-});
 
 function handleRequest(request, response) {
     console.log(request.url);
@@ -147,9 +76,7 @@ function handleRequest(request, response) {
     response.end("404 Not Found");
 }
 
-function servePhpFile(pathname, response) {
+export function servePhpFile(pathname, response) {
     const phpProcess = spawn("php", [pathname]);
     phpProcess.stdout.pipe(response);
 }
-
-server.listen(8080);
