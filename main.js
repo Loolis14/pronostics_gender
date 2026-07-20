@@ -1,10 +1,8 @@
 import { randomUUID } from "node:crypto";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
-import { getCookies } from "./getCookies.js";
-import { isTokenUsed } from "./isTokenUsed.js";
+import { getCookies, isTokenUsed, tokenConsumed } from "./utils.js";
 import { route, servePhpFile, startHttpServer } from "./serveur.js";
-import { tokenConsumed } from "./tokenConsumed.js";
 
 const mainPage = readFileSync("welcome_page.html", "utf-8");
 const formulairePage = readFileSync("formulaire.html", "utf-8");

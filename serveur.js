@@ -13,6 +13,7 @@ const MIME_TYPE_BY_EXT = Object.freeze({
     ".css": "text/css",
     ".png": "image/png",
     ".jpg": "image/jpeg",
+    ".js": "text/javascript",
     __proto__: null,
 });
 
