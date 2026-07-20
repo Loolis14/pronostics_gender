@@ -1,12 +1,19 @@
-import http from "node:http";
+import https from "node:https";
 import { readFileSync, readdirSync, existsSync, writeFileSync, createReadStream } from "node:fs";
 import path from "node:path";
 import { spawn } from "node:child_process";
 
+
 export function startHttpServer(port) {
-    const server = http.createServer(handleRequest);
+    const options = {
+    key: readFileSync("./ssl/key.pem"),
+    cert: readFileSync("./ssl/cert.pem"),
+    };
+
+    const server = https.createServer(options, handleRequest);
     server.listen(8080);
 }
+
 
 const MIME_TYPE_BY_EXT = Object.freeze({
     ".html": "text/html",
