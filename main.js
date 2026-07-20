@@ -16,7 +16,7 @@ route("GET", "/", (request, response) => {
     const token = reqUrl.searchParams.get("token");
     const used = isTokenUsed(token);
     if ( used === null && !cookies.token ) {
-        response.writeHead(404, { "Content-Type": "text/html;charset=utf-8" });
+        response.writeHead(404, { "Content-Type": "text/plain;charset=utf-8" });
         response.end("Le token n'est pas valide.");
         return;
     } if ( used ) {
@@ -54,6 +54,11 @@ route("GET", "/statistics", (_request, response) => {
 route("POST", "/formulaire", (request, response) => {
     let corpsFormulary = "";
     const MAX_PAYLOAD_SIZE = 1 * 1024 * 1024; // 1 MB limit
+    if ( isTokenUsed(getCookies(request)["token"]) == true ) {
+        response.writeHead(404, { "Content-Type": "text/plain;charset=utf-8" });
+        response.end("Tu ne peux voter qu'une fois.\n http://auptitroliste.ddns.net/welcome pour retourner a l'accueil");
+        return;
+    }
     request.setEncoding("utf-8");
     request.on("data", (chunk) => {
         corpsFormulary += chunk;
