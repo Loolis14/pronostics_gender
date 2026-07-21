@@ -1,19 +1,25 @@
-import https from "node:https";
-import { readFileSync, readdirSync, existsSync, writeFileSync, createReadStream } from "node:fs";
-import path from "node:path";
 import { spawn } from "node:child_process";
+import { createReadStream, existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import http from "node:http";
+import https from "node:https";
+import path from "node:path";
 
+const IS_PRODUCTION = process.env.NODE_ENV === "prodution";
 
-export function startHttpServer(port) {
-    const options = {
-    key: readFileSync("./ssl/key.pem"),
-    cert: readFileSync("./ssl/cert.pem"),
-    };
-
-    const server = https.createServer(options, handleRequest);
-    server.listen(8080);
+export function startHttpServer(port = null) {
+    let server;
+    if (IS_PRODUCTION) {
+        server = https.createServer({
+            key: readFileSync("./ssl/key.pem"),
+            cert: readFileSync("./ssl/cert.pem"),
+        }, handleRequest);
+        port ??= 443;
+    } else {
+        server = http.createServer(handleRequest);
+        port ??= 8080;
+    }
+    server.listen(port);
 }
-
 
 const MIME_TYPE_BY_EXT = Object.freeze({
     ".html": "text/html",
