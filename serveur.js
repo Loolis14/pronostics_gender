@@ -4,7 +4,7 @@ import http from "node:http";
 import https from "node:https";
 import path from "node:path";
 
-const IS_PRODUCTION = process.env.NODE_ENV === "prodution";
+const IS_PRODUCTION = process.env.NODE_ENV === "production";
 
 export function startHttpServer(port = null) {
     let server;
