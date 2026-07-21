@@ -8,7 +8,7 @@ import { getToken, isTokenUsed, isValidToken, markTokenAsUsed, withToken } from 
 const mainPage = readFileSync("welcome_page.html", "utf-8");
 const formulairePage = readFileSync("formulaire.html", "utf-8");
 
-startHttpServer(8080);
+startHttpServer();
 
 route("GET", "/", withToken((request, response) => {
     const token = getToken(request);
@@ -47,7 +47,7 @@ route("POST", "/formulaire", (request, response) => {
     } 
     if (isTokenUsed(token)) {
         response.writeHead(404, { "Content-Type": "text/plain;charset=utf-8" });
-        response.end("Tu ne peux voter qu'une fois.\nhttp://auptitroliste.ddns.net/welcome pour retourner a l'accueil");
+        response.end("Tu ne peux voter qu'une fois.\nhttp://auptitroliste.ddns.net/ pour retourner aux stats");
         return;
     }
     request.setEncoding("utf-8");
