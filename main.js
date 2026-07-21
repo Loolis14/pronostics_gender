@@ -11,9 +11,9 @@ startHttpServer(8080);
 
 route("GET", "/", (request, response) => {
     const cookies = getCookies(request);
-    const baseUrl = `http://${request.headers.host}`;
-    const reqUrl = new URL(request.url, baseUrl);
-    const token = reqUrl.searchParams.get("token");
+    const queryString = request.url.split("?")[1] || "";
+    const searchParams = new URLSearchParams(queryString);
+    const token = searchParams.get("token");
     const used = isTokenUsed(token);
     if ( used === null && !cookies.token ) {
         response.writeHead(404, { "Content-Type": "text/plain;charset=utf-8" });

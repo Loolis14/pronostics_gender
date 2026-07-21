@@ -63,8 +63,7 @@ export function route(method, url, callback) {
 }
 
 function handleRequest(request, response) {
-    console.log(request.url);
-    console.log(request.method);
+    console.log((new Date()).toLocaleString("fr-BE"), request.url, request.method)
     if (!request.url) {
         return;
     }
