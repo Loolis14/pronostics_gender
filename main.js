@@ -15,11 +15,12 @@ route("GET", "/", (request, response) => {
     const searchParams = new URLSearchParams(queryString);
     const token = searchParams.get("token");
     const used = isTokenUsed(token);
-    if ( used === null && !cookies.token ) {
+    if ( used === null || !cookies.token ) {
         response.writeHead(404, { "Content-Type": "text/plain;charset=utf-8" });
         response.end("Le token n'est pas valide.");
         return;
-    } if ( used ) {
+    }
+    if ( used ) {
         response.writeHead(302, { "Location": "/statistics"});
         response.end();
         return;
@@ -52,6 +53,12 @@ route("GET", "/statistics", (_request, response) => {
 });
 
 route("POST", "/formulaire", (request, response) => {
+    const token = getCookies(request).token;
+    if (!token || isTokenUsed(token) === null) {
+        response.writeHead(404, { "Content-Type": "text/plain;charset=utf-8" });
+        response.end("404 Not Found");
+        return;
+    } 
     let corpsFormulary = "";
     const MAX_PAYLOAD_SIZE = 1 * 1024 * 1024; // 1 MB limit
     if ( isTokenUsed(getCookies(request)["token"]) == true ) {
@@ -84,8 +91,12 @@ route("POST", "/formulaire", (request, response) => {
             console.log(`Fichier creer avec succes`);
             response.writeHead(303, {"Location": "/statistics" });
             response.end();
-            const cookie = getCookies(request);
-            tokenConsumed(cookie.token, donnees.name);
+            try {
+                tokenConsumed(token, donnees.name);
+            } catch (error) {
+                console.log(error);
+                
+            }
         } catch (error) {
             console.error("Erreur lors de la création du fichier.");
             response.writeHead(500, { "Content-Type": "text/html;charset=utf-8" });
