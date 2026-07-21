@@ -10,9 +10,9 @@ export function startHttpServer(port = null) {
     let server;
     if (IS_PRODUCTION) {
         server = https.createServer({
-            key: readFileSync("./ssl/key.pem"),
-            cert: readFileSync("./ssl/cert.pem"),
-        }, handleRequest);
+            key: readFileSync("/etc/letsencrypt/live/auptitroliste.ddns.net/privkey.pem"),
+            cert: readFileSync("/etc/letsencrypt/live/auptitroliste.ddns.net/fullchain.pem"),
+        }, handleRequest);  
         port ??= 443;
     } else {
         server = http.createServer(handleRequest);
