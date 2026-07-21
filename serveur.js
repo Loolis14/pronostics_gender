@@ -35,8 +35,11 @@ function serveAssets(pathname, response) {
 
     // Try to read the file and pipe its contents directly into the reponse.
     const readStream = createReadStream(path.join(process.cwd(), pathname));
-    readStream.pipe(response);
     readStream.on("error", (error) => {
+        if (response.headersSent) {
+            response.destroy();
+            return;
+        }
         if (error.code === "ENOENT") { // triggered if the file doesn't exist
             response.writeHead(404, { "Content-Type": "text/plain;charset=utf-8" });
             response.end("404 Not Found");
@@ -46,6 +49,7 @@ function serveAssets(pathname, response) {
         }
         console.error(`Error reading ${pathname}:`, error.message);
     });
+    readStream.pipe(response);
 }
 
 function getRouteName(method, url) {
