@@ -1,72 +1,58 @@
 import { randomUUID } from "node:crypto";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
-import { getCookies, isTokenUsed, tokenConsumed } from "./utils.js";
+import { getCookies } from "./utils.js";
 import { route, servePhpFile, startHttpServer } from "./serveur.js";
+import { getToken, isTokenUsed, isValidToken, markTokenAsUsed, withToken } from "./token.js";
 
 const mainPage = readFileSync("welcome_page.html", "utf-8");
 const formulairePage = readFileSync("formulaire.html", "utf-8");
 
 startHttpServer(8080);
 
-route("GET", "/", (request, response) => {
-    const cookies = getCookies(request);
-    const queryString = request.url.split("?")[1] || "";
-    const searchParams = new URLSearchParams(queryString);
-    const token = searchParams.get("token");
-    const used = isTokenUsed(token);
-    if ( used === null || !cookies.token ) {
+route("GET", "/", withToken((request, response) => {
+    const token = getToken(request);
+    if (!isValidToken(token)) {
         response.writeHead(404, { "Content-Type": "text/plain;charset=utf-8" });
         response.end("Le token n'est pas valide.");
         return;
     }
-    if ( used ) {
+    if (isTokenUsed(token)) {
         response.writeHead(302, { "Location": "/statistics"});
         response.end();
         return;
     }
-    if ( !cookies.token ) {
-        response.setHeader("Set-Cookie", `token=${token}; Path=/; HttpOnly`);
-        response.writeHead(303, {"Location": "/welcome" });
-        response.end();
-    } else {
-        response.writeHead(303, {"Location": "/welcome" });
-        response.end();
-    }
-});
-
-route("GET", "/welcome", (_request, response) => {
     response.writeHead(200, { "Content-Type": "text/html;charset=utf-8" });
     response.write(mainPage);
     response.end();
-});
+}));
 
-route("GET", "/formulaire", (_request, response) => {
+route("GET", "/formulaire", withToken((_request, response) => {
     response.writeHead(200, { "Content-Type": "text/html;charset=utf-8" });
     response.write(formulairePage);
     response.end();
-});
+}));
 
-route("GET", "/statistics", (_request, response) => {
+route("GET", "/statistics", withToken((_request, response) => {
     response.setHeader("Content-Type", "text/html;charset=utf-8");
     servePhpFile("statistics.php", response);
-});
+}));
 
 route("POST", "/formulaire", (request, response) => {
-    const token = getCookies(request).token;
-    if (!token || isTokenUsed(token) === null) {
-        response.writeHead(404, { "Content-Type": "text/plain;charset=utf-8" });
-        response.end("404 Not Found");
+    const token = getToken(request);
+    if (!isValidToken(token)) {
+        response.writeHead(401, { "Content-Type": "text/plain;charset=utf-8" });
+        response.end("401 Unauthorized");
         return;
     } 
-    let corpsFormulary = "";
-    const MAX_PAYLOAD_SIZE = 1 * 1024 * 1024; // 1 MB limit
-    if ( isTokenUsed(getCookies(request)["token"]) == true ) {
+    if (isTokenUsed(token)) {
         response.writeHead(404, { "Content-Type": "text/plain;charset=utf-8" });
-        response.end("Tu ne peux voter qu'une fois.\n http://auptitroliste.ddns.net/welcome pour retourner a l'accueil");
+        response.end("Tu ne peux voter qu'une fois.\nhttp://auptitroliste.ddns.net/welcome pour retourner a l'accueil");
         return;
     }
     request.setEncoding("utf-8");
+    const MAX_PAYLOAD_SIZE = 2 * 1024; // 2 kB limit
+    let corpsFormulary = "";
     request.on("data", (chunk) => {
         corpsFormulary += chunk;
         // Prevent memory exhaustion attacks
@@ -91,12 +77,7 @@ route("POST", "/formulaire", (request, response) => {
             console.log(`Fichier creer avec succes`);
             response.writeHead(303, {"Location": "/statistics" });
             response.end();
-            try {
-                tokenConsumed(token, donnees.name);
-            } catch (error) {
-                console.log(error);
-                
-            }
+            markTokenAsUsed(token, donnees.name);
         } catch (error) {
             console.error("Erreur lors de la création du fichier.");
             response.writeHead(500, { "Content-Type": "text/html;charset=utf-8" });
