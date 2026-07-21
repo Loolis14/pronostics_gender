@@ -67,13 +67,14 @@ function handleRequest(request, response) {
     if (!request.url) {
         return;
     }
-    const baseUrl = `http://${request.headers.host}`;
-    const reqUrl = new URL(request.url, baseUrl);
-    if (reqUrl.pathname.startsWith("/assets")) {
-        serveAssets(reqUrl.pathname, response);
+    const rawPath = request.url.split("?")[0] ?? "";
+    // resolve dot-segments (../) to prevent path traversal attacks
+    const pathname = path.posix.normalize(rawPath);
+    if (pathname.startsWith("/assets")) {
+        serveAssets(pathname, response);
         return;
     }
-    const routeName = getRouteName(request.method, reqUrl.pathname);
+    const routeName = getRouteName(request.method, pathname);
     if (routes.has(routeName)) {
         routes.get(routeName)(request, response);
         return;
